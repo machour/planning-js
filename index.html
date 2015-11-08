@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/lokijs/build/lokijs.min.js"></script>
+    <script type="text/javascript" src="Planning.js"></script>
+    <style>
+        body{ 
+          background-color: #333; 
+          width: 100%;
+          margin: 0;
+        }
+        #log {
+          color: white;
+        }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="1200" height="600"></canvas>
+    <div id="log">a</div>
+  <script>
+
+      var p = new Planning({
+          selector: 'canvas'
+      });
+
+      var i;
+      for (i = 1; i <= 20; i++) {
+          p.addRow({
+              id: i,
+              label: 'Row #' + i,
+              renderer: function (planning, context, row, index) {
+                  var itemHeight = planning.getOption('grid', 'itemHeight');
+                  var daysHeight = planning.getOption('dates', 'daysHeight');
+                  var rowWidth = planning.getOption('rows', 'width');
+
+                  context.fillStyle = planning.getOption('rows', 'textColor');
+                  context.font = planning.getOption('rows', 'font');
+
+                  context.fillText(row.label, -planning.translatedX + 12, (itemHeight * index) + daysHeight + 16);
+
+                  var img = new Image();
+                  img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADLUlEQVRYR+2WX0jTURTHv2f76SzFJ1/UwPkSGKioLz1E0ouQytDVMB3JNMH+oNBD73uolwVh6EPWAlcOicGikaOCopcIKcN8T0WdY7BkWJQWv9+JO34/+TU3f9tKffG+3nO+53PPPefcSzjgRQccH4cAOWfA7XZLiUSiZGRkJPE/ri8rgKGhoROSJA0ycxsAKwAzgB8APgF4WlhY+MDj8XzLB2hXALfbXbi+vn4HwGU1aKYYMWa+Ojo6GswVIiOAy+UqKi4ufgngdJaiTETXx8bG7mZpnzTLCDA4OOgD0KsT+w7gHhF9YOYVALUAzgLo0NkoANrGx8dfZAuRFqCvr6/ZZDK91YnMEFG31+tdTBUeGBg4z8wPAZSqewsbGxs1gUDgVzYQaQF6e3uniahVFfgqy3Lt5ORkNJOgy+XqVyE0kx6fzzeVF4DD4SixWCxxZraoAsN+v3/USMzpdL4HcFK1e+L3+y8Y+aStge7u7jpZlj9rzmazuX5qamreSKyrq8vDzDeEHTPPBwKBeiOftAB2u/0MgDeac2lp6ZGJiYlNIzG73X4JgFe1iwSDwWNGPmkBbDZbHYDtDACoD4VChhmw2WweAMkMAJgJhULadezKsaMIW1paiiVJigMoShISDU9PTxvWQGtrq74GJsPh8MW8MiCcGhsbn4t+1rqAiGpnZ2czdkFDQ0M/EYlWTC5FUTrm5uae5Q1gtVqbAfw1BxRF6VleXl5IFa2urnYws7h7bQ58WVpaOi448gYQjlar1cfMqZPwPjPPAIgQkahyMQnbUwL9NJlMHYuLi6/+FaBIUZQwM4uuyHWJrulYWVkRb0luRai3bmpqKojFYrcBXAMg7aIkBtcVAOeISBtAm0RkCJHVf6CqqqpGlmXxJOv/A5vM/BFAcGtryxuPx8V/QKqsrHyshwDQubq6mvFxygog5eTmsrKyo2rAdEkxV1RUPCKiHnVTZCIjRD4ARtcq9pMQALYhmLkzGo3uyMReAWgQ4k/h1GWiPRKJvNafYC8B0kG8W1tbO7WfAEmI8vJyMcr7ANyMRqO39htAi1cA4HdqAe31FRgW7CHAgWfgDwEGFzC9OtbRAAAAAElFTkSuQmCC';
+                  context.drawImage(img, -planning.translatedX + rowWidth - 30, (itemHeight * index) + daysHeight);
+              }
+          });
+      }
+
+      p.registerItemType('rental', {
+          status: 'ongoing',
+          text: 'unknown',
+          background: '#bfe2ca',
+          color: '#333',
+          onclick: function(item) {
+              console.log(item);
+          }
+      });
+      p.addItem('rental', {id: 344, row: 3, start: 1444716000, end: 1444844800, text: 'Mehdi'});
+
+      p.registerItemType('repair', {
+          status: 'ongoing',
+          text: 'unknown',
+          background: '#a6daef',
+          color: '#333',
+          onclick: function(item) {
+              console.log(item);
+          }
+      });
+      p.addItem('repair', {id: 345, row: 4, start: 1444796000, end: 1444964800, text: 'Reparation'});
+
+      p.registerItemType('immobilisation', {
+          status: 'ongoing',
+          text: 'unknown',
+          background: '#fed88f',
+          selectable: {
+              on: false
+          },
+          color: '#333',
+          onclick: function(item) {
+              console.log(item);
+          }
+
+      });
+      for (var i = 0; i < 10000 ; i++)
+      p.addItem('immobilisation', {id: 640, row: 5, start: 1444716000 + (i * 200000), end: 1444844800 + (i * 200000), text: 'Immo'});
+
+      p.draw();
+
+  </script>
+  </body>
+</html>
